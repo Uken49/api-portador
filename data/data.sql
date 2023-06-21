@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS CARD_HOLDER(
         id UUID UNIQUE,
+        clientId UUID UNIQUE,
         PRIMARY KEY (id),
         status BOOLEAN,
         credit_limit DOUBLE PRECISION,
@@ -10,6 +11,7 @@ CREATE TABLE IF NOT EXISTS CARD_HOLDER(
 CREATE TABLE IF NOT EXISTS CARD(
         id UUID UNIQUE,
         PRIMARY KEY (id),
+        credit_limit DOUBLE PRECISION,
         card_number VARCHAR(19),
         cvv INTEGER,
         dueDate DATE,
