@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CardHolderRepository extends JpaRepository<CardHolderEntity, UUID> {
+
+    boolean existsByClientId(UUID clientId);
 }
