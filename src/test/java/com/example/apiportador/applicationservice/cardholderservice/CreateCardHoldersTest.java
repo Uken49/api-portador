@@ -13,7 +13,6 @@ import com.example.apiportador.presentation.handler.exception.ClientWithIDAlread
 import com.example.apiportador.presentation.handler.exception.CreditAnalisysNotApproved;
 import com.example.apiportador.presentation.handler.exception.CreditAnalisysNotFoundException;
 import com.example.apiportador.presentation.request.CardHolderRequest;
-import com.example.apiportador.util.enums.StatusEnum;
 import factory.CardHolderEntityFactory;
 import factory.CardHolderRequestFactory;
 import factory.CreditAnalisysDtoFactory;

@@ -63,4 +63,8 @@ public class CreateCardHolders {
 
         return creditAnalisys;
     }
+
+    public void deleta() {
+        cardHolderRepository.deleteAll();
+    }
 }
