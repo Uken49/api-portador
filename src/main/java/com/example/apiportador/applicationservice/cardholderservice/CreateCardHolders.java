@@ -8,9 +8,13 @@ import com.example.apiportador.infrastructure.repository.CardHolderRepository;
 import com.example.apiportador.infrastructure.repository.entity.CardHolderEntity;
 import com.example.apiportador.presentation.handler.exception.ClientDoesNotCorrespondToCreditAnalysisException;
 import com.example.apiportador.presentation.handler.exception.ClientWithIDAlreadyExistsException;
+import com.example.apiportador.presentation.handler.exception.CreditAnalisysNotApproved;
+import com.example.apiportador.presentation.handler.exception.CreditAnalisysNotFoundException;
 import com.example.apiportador.presentation.request.CardHolderRequest;
 import com.example.apiportador.presentation.response.CardHolderResponse;
 import com.example.apiportador.util.enums.StatusEnum;
+import java.util.Objects;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,15 +28,7 @@ public class CreateCardHolders {
 
     public CardHolderResponse createCardHolder(CardHolderRequest requestedAnalysis) {
 
-        final CreditAnalisysDto creditAnalisys = creditAnalisysApi.getCreditAnalisysById(requestedAnalysis.creditAnalysisId());
-
-        if (!requestedAnalysis.clientId().equals(creditAnalisys.clientId())) {
-            throw new ClientDoesNotCorrespondToCreditAnalysisException("ID do cliente não corresponde ao ID da análise");
-        }
-
-        if (cardHolderRepository.existsByClientId(requestedAnalysis.clientId())) {
-            throw new ClientWithIDAlreadyExistsException("Cliente com ID: %s já possui um cadastro".formatted(requestedAnalysis.clientId()));
-        }
+        final CreditAnalisysDto creditAnalisys = findCreditAnalisysById(requestedAnalysis.clientId(), requestedAnalysis.creditAnalysisId());
 
         final CardHolder cardHolder = cardHolderMapper.fromDomain(requestedAnalysis).toBuilder()
                 .limit(creditAnalisys.approvedLimit())
@@ -44,5 +40,27 @@ public class CreateCardHolders {
         final CardHolderEntity cardHolderSaved = cardHolderRepository.save(cardHolderEntity);
 
         return cardHolderMapper.fromResponse(cardHolderSaved);
+    }
+
+    private CreditAnalisysDto findCreditAnalisysById(UUID clientId, UUID analisysId) {
+        final CreditAnalisysDto creditAnalisys = creditAnalisysApi.getCreditAnalisysById(analisysId);
+
+        if (Objects.isNull(creditAnalisys)) {
+            throw new CreditAnalisysNotFoundException("Análise de crédito com ID: %s não foi encontrada".formatted(analisysId));
+        }
+
+        if (Boolean.FALSE.equals(creditAnalisys.approved())) {
+            throw new CreditAnalisysNotApproved("Não é possível criar portador com análise de crédito não aprovada");
+        }
+
+        if (!clientId.equals(creditAnalisys.clientId())) {
+            throw new ClientDoesNotCorrespondToCreditAnalysisException("ID do cliente não corresponde ao ID da análise");
+        }
+
+        if (cardHolderRepository.existsByClientId(clientId)) {
+            throw new ClientWithIDAlreadyExistsException("Cliente com ID: %s já possui um cadastro".formatted(analisysId));
+        }
+
+        return creditAnalisys;
     }
 }
