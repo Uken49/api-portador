@@ -2,6 +2,9 @@ package com.example.apiportador.presentation.handler;
 
 import com.example.apiportador.presentation.handler.exception.ClientDoesNotCorrespondToCreditAnalysisException;
 import com.example.apiportador.presentation.handler.exception.ClientWithIDAlreadyExistsException;
+import com.example.apiportador.presentation.handler.exception.CreditAnalisysNotApproved;
+import com.example.apiportador.presentation.handler.exception.CreditAnalisysNotFoundException;
+import jakarta.validation.ConstraintViolationException;
 import java.net.URI;
 import java.time.LocalDateTime;
 import org.springframework.http.HttpStatus;
@@ -15,8 +18,8 @@ public class HandlerExceptionAdvice {
     private ProblemDetail builderProblemDetail(String title, HttpStatus status, String detail) {
         final ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(status, detail);
 
+        problemDetail.setType(URI.create("https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Status/" + status.value()));
         problemDetail.setTitle(title);
-        problemDetail.setType(URI.create(""));
         problemDetail.setProperty("timestamp", LocalDateTime.now());
 
         return problemDetail;
@@ -24,7 +27,7 @@ public class HandlerExceptionAdvice {
 
     @ExceptionHandler(ClientDoesNotCorrespondToCreditAnalysisException.class)
     public ProblemDetail clientDoesNotCorrespondToCreditAnalysisExceptionHandler(ClientDoesNotCorrespondToCreditAnalysisException cdnctcae) {
-        return builderProblemDetail("Portador não cadastrado", HttpStatus.BAD_REQUEST,cdnctcae.getMessage());
+        return builderProblemDetail("Portador não cadastrado", HttpStatus.BAD_REQUEST, cdnctcae.getMessage());
     }
 
     @ExceptionHandler(ClientWithIDAlreadyExistsException.class)
@@ -32,5 +35,19 @@ public class HandlerExceptionAdvice {
         return builderProblemDetail("Portador não cadastrado", HttpStatus.CONFLICT, cwiaee.getMessage());
     }
 
+    @ExceptionHandler(CreditAnalisysNotFoundException.class)
+    public ProblemDetail creditAnalisysNotFoundExceptionHandler(CreditAnalisysNotFoundException canfe) {
+        return builderProblemDetail("Análise de crédito não encontrada", HttpStatus.UNPROCESSABLE_ENTITY, canfe.getMessage());
+    }
+
+    @ExceptionHandler(CreditAnalisysNotApproved.class)
+    public ProblemDetail creditAnalisysNotApprovedHandler(CreditAnalisysNotApproved cana) {
+        return builderProblemDetail("Cliente sem limite de crédito", HttpStatus.UNPROCESSABLE_ENTITY, cana.getMessage());
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ProblemDetail constraintViolationExceptionHandler(ConstraintViolationException cve) {
+        return builderProblemDetail("Argumento inválido", HttpStatus.BAD_REQUEST, cve.getLocalizedMessage());
+    }
 
 }
