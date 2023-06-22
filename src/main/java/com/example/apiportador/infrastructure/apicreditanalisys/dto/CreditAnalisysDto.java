@@ -4,6 +4,6 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 public record CreditAnalisysDto(
-        UUID id, UUID clientId, BigDecimal approvedLimit
+        UUID id, UUID clientId, BigDecimal approvedLimit, Boolean approved
 ) {
 }
