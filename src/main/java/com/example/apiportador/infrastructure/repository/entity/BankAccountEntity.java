@@ -11,8 +11,8 @@ import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -20,7 +20,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Entity
 @Immutable
 @Getter
-@Setter
+@AllArgsConstructor
 @Table(name = "BANK_ACCOUNT")
 public class BankAccountEntity {
     @Id
