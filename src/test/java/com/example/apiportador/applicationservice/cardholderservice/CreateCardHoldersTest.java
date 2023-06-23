@@ -57,10 +57,10 @@ class CreateCardHoldersTest {
     @Test
     void should_map_to_entities() {
 
-        final CardHolderRequest cardHolderRequest = CardHolderRequestFactory.CardHolderRequest();
-        final CardHolderEntity cardHolderEntity = CardHolderEntityFactory.CardHolderEntity();
+        final CardHolderRequest cardHolderRequest = CardHolderRequestFactory.cardHolderRequest();
+        final CardHolderEntity cardHolderEntity = CardHolderEntityFactory.cardHolderEntity();
 
-        when(creditAnalisysApi.getCreditAnalisysById(analisysIdArgumentCaptor.capture())).thenReturn(CreditAnalisysDtoFactory.CreditAnalisysDto());
+        when(creditAnalisysApi.getCreditAnalisysById(analisysIdArgumentCaptor.capture())).thenReturn(CreditAnalisysDtoFactory.creditAnalisysDto());
         when(cardHolderRepository.save(cardHolderEntityArgumentCaptor.capture())).thenReturn(cardHolderEntity);
 
         createCardHolders.createCardHolder(cardHolderRequest);
@@ -75,7 +75,7 @@ class CreateCardHoldersTest {
     @Test
     void should_throw_CreditAnalisysNotFoundException_when_creditAnalisys_is_null() {
 
-        final CardHolderRequest cardHolderRequest = CardHolderRequestFactory.CardHolderRequest();
+        final CardHolderRequest cardHolderRequest = CardHolderRequestFactory.cardHolderRequest();
 
         when(creditAnalisysApi.getCreditAnalisysById(analisysIdArgumentCaptor.capture())).thenReturn(null);
 
@@ -88,10 +88,10 @@ class CreateCardHoldersTest {
     @Test
     void should_throw_CreditAnalisysNotApproved_when_creditAnalisys_approved_is_false() {
 
-        final CardHolderRequest cardHolderRequest = CardHolderRequestFactory.CardHolderRequest();
+        final CardHolderRequest cardHolderRequest = CardHolderRequestFactory.cardHolderRequest();
 
         when(creditAnalisysApi.getCreditAnalisysById(analisysIdArgumentCaptor.capture()))
-                .thenReturn(CreditAnalisysDtoFactory.CreditAnalisysDtoApprovedFalse());
+                .thenReturn(CreditAnalisysDtoFactory.creditAnalisysDtoApprovedFalse());
 
         assertThrows(CreditAnalisysNotApproved.class,
                 () -> createCardHolders.createCardHolder(cardHolderRequest), "Não é possível criar portador com análise de crédito não aprovada");
@@ -101,10 +101,10 @@ class CreateCardHoldersTest {
     @Test
     void should_throw_ClientDoesNotCorrespondToCreditAnalysisException_when_requested_clientId_is_not_equal_tocreditAnalisys_clientId() {
 
-        final CardHolderRequest cardHolderRequest = CardHolderRequestFactory.CardHolderRequest();
+        final CardHolderRequest cardHolderRequest = CardHolderRequestFactory.cardHolderRequest();
 
         when(creditAnalisysApi.getCreditAnalisysById(analisysIdArgumentCaptor.capture()))
-                .thenReturn(CreditAnalisysDtoFactory.CreditAnalisysDtoOtherId());
+                .thenReturn(CreditAnalisysDtoFactory.creditAnalisysDtoOtherId());
 
         assertThrows(ClientDoesNotCorrespondToCreditAnalysisException.class,
                 () -> createCardHolders.createCardHolder(cardHolderRequest), "ID do cliente não corresponde ao ID da análise");
@@ -114,10 +114,10 @@ class CreateCardHoldersTest {
     @Test
     void should_throw_ClientWithIDAlreadyExistsException_when_client_already_have_an_account() {
 
-        final CardHolderRequest cardHolderRequest = CardHolderRequestFactory.CardHolderRequest();
+        final CardHolderRequest cardHolderRequest = CardHolderRequestFactory.cardHolderRequest();
 
         when(creditAnalisysApi.getCreditAnalisysById(analisysIdArgumentCaptor.capture()))
-                .thenReturn(CreditAnalisysDtoFactory.CreditAnalisysDto());
+                .thenReturn(CreditAnalisysDtoFactory.creditAnalisysDto());
 
         doThrow(DataIntegrityViolationException.class)
                 .when(cardHolderRepository)
