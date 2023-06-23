@@ -2,6 +2,9 @@ package com.example.apiportador.applicationservice.cardholderservice;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
 import com.example.apiportador.infrastructure.apicreditanalisys.CreditAnalisysApi;
 import com.example.apiportador.infrastructure.mapper.CardHolderMapper;
@@ -25,9 +28,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -57,8 +60,8 @@ class CreateCardHoldersTest {
         final CardHolderRequest cardHolderRequest = CardHolderRequestFactory.CardHolderRequest();
         final CardHolderEntity cardHolderEntity = CardHolderEntityFactory.CardHolderEntity();
 
-        Mockito.when(creditAnalisysApi.getCreditAnalisysById(analisysIdArgumentCaptor.capture())).thenReturn(CreditAnalisysDtoFactory.CreditAnalisysDto());
-        Mockito.when(cardHolderRepository.save(cardHolderEntityArgumentCaptor.capture())).thenReturn(cardHolderEntity);
+        when(creditAnalisysApi.getCreditAnalisysById(analisysIdArgumentCaptor.capture())).thenReturn(CreditAnalisysDtoFactory.CreditAnalisysDto());
+        when(cardHolderRepository.save(cardHolderEntityArgumentCaptor.capture())).thenReturn(cardHolderEntity);
 
         createCardHolders.createCardHolder(cardHolderRequest);
         final CardHolderEntity cardHolderEntityValue = cardHolderEntityArgumentCaptor.getValue();
@@ -74,7 +77,7 @@ class CreateCardHoldersTest {
 
         final CardHolderRequest cardHolderRequest = CardHolderRequestFactory.CardHolderRequest();
 
-        Mockito.when(creditAnalisysApi.getCreditAnalisysById(analisysIdArgumentCaptor.capture())).thenReturn(null);
+        when(creditAnalisysApi.getCreditAnalisysById(analisysIdArgumentCaptor.capture())).thenReturn(null);
 
         assertThrows(CreditAnalisysNotFoundException.class,
                 () -> createCardHolders.createCardHolder(cardHolderRequest),
@@ -87,7 +90,7 @@ class CreateCardHoldersTest {
 
         final CardHolderRequest cardHolderRequest = CardHolderRequestFactory.CardHolderRequest();
 
-        Mockito.when(creditAnalisysApi.getCreditAnalisysById(analisysIdArgumentCaptor.capture()))
+        when(creditAnalisysApi.getCreditAnalisysById(analisysIdArgumentCaptor.capture()))
                 .thenReturn(CreditAnalisysDtoFactory.CreditAnalisysDtoApprovedFalse());
 
         assertThrows(CreditAnalisysNotApproved.class,
@@ -100,7 +103,7 @@ class CreateCardHoldersTest {
 
         final CardHolderRequest cardHolderRequest = CardHolderRequestFactory.CardHolderRequest();
 
-        Mockito.when(creditAnalisysApi.getCreditAnalisysById(analisysIdArgumentCaptor.capture()))
+        when(creditAnalisysApi.getCreditAnalisysById(analisysIdArgumentCaptor.capture()))
                 .thenReturn(CreditAnalisysDtoFactory.CreditAnalisysDtoOtherId());
 
         assertThrows(ClientDoesNotCorrespondToCreditAnalysisException.class,
@@ -113,13 +116,17 @@ class CreateCardHoldersTest {
 
         final CardHolderRequest cardHolderRequest = CardHolderRequestFactory.CardHolderRequest();
 
-        Mockito.when(creditAnalisysApi.getCreditAnalisysById(analisysIdArgumentCaptor.capture()))
+        when(creditAnalisysApi.getCreditAnalisysById(analisysIdArgumentCaptor.capture()))
                 .thenReturn(CreditAnalisysDtoFactory.CreditAnalisysDto());
-        Mockito.when(cardHolderRepository.existsByClientId(clientIdArgumentCaptor.capture())).thenReturn(true);
+
+        doThrow(DataIntegrityViolationException.class)
+                .when(cardHolderRepository)
+                .save(any(CardHolderEntity.class));
 
         assertThrows(ClientWithIDAlreadyExistsException.class,
                 () -> createCardHolders.createCardHolder(cardHolderRequest),
                 "Cliente com ID: %s já possui um cadastro".formatted(cardHolderRequest.clientId()));
+
         assertEquals(cardHolderRequest.creditAnalysisId(), analisysIdArgumentCaptor.getValue());
     }
 
