@@ -6,19 +6,19 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
-import com.example.apiportador.infrastructure.apicreditanalisys.CreditAnalisysApi;
+import com.example.apiportador.infrastructure.apicreditanalysis.CreditAnalysisApi;
 import com.example.apiportador.infrastructure.mapper.CardHolderMapper;
 import com.example.apiportador.infrastructure.mapper.CardHolderMapperImpl;
 import com.example.apiportador.infrastructure.repository.CardHolderRepository;
 import com.example.apiportador.infrastructure.repository.entity.CardHolderEntity;
 import com.example.apiportador.presentation.handler.exception.ClientDoesNotCorrespondToCreditAnalysisException;
 import com.example.apiportador.presentation.handler.exception.ClientWithIDAlreadyExistsException;
-import com.example.apiportador.presentation.handler.exception.CreditAnalisysNotApproved;
-import com.example.apiportador.presentation.handler.exception.CreditAnalisysNotFoundException;
+import com.example.apiportador.presentation.handler.exception.CreditAnalysisNotApproved;
+import com.example.apiportador.presentation.handler.exception.CreditAnalysisNotFoundException;
 import com.example.apiportador.presentation.request.CardHolderRequest;
 import factory.CardHolderEntityFactory;
 import factory.CardHolderRequestFactory;
-import factory.CreditAnalisysDtoFactory;
+import factory.CreditAnalysisDtoFactory;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -37,7 +37,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 class CreateCardHoldersTest {
 
     @Mock
-    private CreditAnalisysApi creditAnalisysApi;
+    private CreditAnalysisApi creditAnalysisApi;
     @Mock
     private CardHolderRepository cardHolderRepository;
     @Spy
@@ -60,7 +60,7 @@ class CreateCardHoldersTest {
         final CardHolderRequest cardHolderRequest = CardHolderRequestFactory.cardHolderRequest();
         final CardHolderEntity cardHolderEntity = CardHolderEntityFactory.cardHolderEntity();
 
-        when(creditAnalisysApi.getCreditAnalisysById(analisysIdArgumentCaptor.capture())).thenReturn(CreditAnalisysDtoFactory.creditAnalisysDto());
+        when(creditAnalysisApi.getCreditAnalysisById(analisysIdArgumentCaptor.capture())).thenReturn(CreditAnalysisDtoFactory.creditAnalysisDto());
         when(cardHolderRepository.save(cardHolderEntityArgumentCaptor.capture())).thenReturn(cardHolderEntity);
 
         createCardHolders.createCardHolder(cardHolderRequest);
@@ -73,38 +73,38 @@ class CreateCardHoldersTest {
     }
 
     @Test
-    void should_throw_CreditAnalisysNotFoundException_when_creditAnalisys_is_null() {
+    void should_throw_CreditAnalysisNotFoundException_when_creditAnalysis_is_null() {
 
         final CardHolderRequest cardHolderRequest = CardHolderRequestFactory.cardHolderRequest();
 
-        when(creditAnalisysApi.getCreditAnalisysById(analisysIdArgumentCaptor.capture())).thenReturn(null);
+        when(creditAnalysisApi.getCreditAnalysisById(analisysIdArgumentCaptor.capture())).thenReturn(null);
 
-        assertThrows(CreditAnalisysNotFoundException.class,
+        assertThrows(CreditAnalysisNotFoundException.class,
                 () -> createCardHolders.createCardHolder(cardHolderRequest),
                 "Análise de crédito com ID: %s não foi encontrada".formatted(cardHolderRequest.creditAnalysisId()));
         assertEquals(cardHolderRequest.creditAnalysisId(), analisysIdArgumentCaptor.getValue());
     }
 
     @Test
-    void should_throw_CreditAnalisysNotApproved_when_creditAnalisys_approved_is_false() {
+    void should_throw_CreditAnalysisNotApproved_when_creditAnalysis_approved_is_false() {
 
         final CardHolderRequest cardHolderRequest = CardHolderRequestFactory.cardHolderRequest();
 
-        when(creditAnalisysApi.getCreditAnalisysById(analisysIdArgumentCaptor.capture()))
-                .thenReturn(CreditAnalisysDtoFactory.creditAnalisysDtoApprovedFalse());
+        when(creditAnalysisApi.getCreditAnalysisById(analisysIdArgumentCaptor.capture()))
+                .thenReturn(CreditAnalysisDtoFactory.creditAnalysisDtoApprovedFalse());
 
-        assertThrows(CreditAnalisysNotApproved.class,
+        assertThrows(CreditAnalysisNotApproved.class,
                 () -> createCardHolders.createCardHolder(cardHolderRequest), "Não é possível criar portador com análise de crédito não aprovada");
         assertEquals(cardHolderRequest.creditAnalysisId(), analisysIdArgumentCaptor.getValue());
     }
 
     @Test
-    void should_throw_ClientDoesNotCorrespondToCreditAnalysisException_when_requested_clientId_is_not_equal_tocreditAnalisys_clientId() {
+    void should_throw_ClientDoesNotCorrespondToCreditAnalysisException_when_requested_clientId_is_not_equal_tocreditAnalysis_clientId() {
 
         final CardHolderRequest cardHolderRequest = CardHolderRequestFactory.cardHolderRequest();
 
-        when(creditAnalisysApi.getCreditAnalisysById(analisysIdArgumentCaptor.capture()))
-                .thenReturn(CreditAnalisysDtoFactory.creditAnalisysDtoOtherId());
+        when(creditAnalysisApi.getCreditAnalysisById(analisysIdArgumentCaptor.capture()))
+                .thenReturn(CreditAnalysisDtoFactory.creditAnalysisDtoOtherId());
 
         assertThrows(ClientDoesNotCorrespondToCreditAnalysisException.class,
                 () -> createCardHolders.createCardHolder(cardHolderRequest), "ID do cliente não corresponde ao ID da análise");
@@ -116,8 +116,8 @@ class CreateCardHoldersTest {
 
         final CardHolderRequest cardHolderRequest = CardHolderRequestFactory.cardHolderRequest();
 
-        when(creditAnalisysApi.getCreditAnalisysById(analisysIdArgumentCaptor.capture()))
-                .thenReturn(CreditAnalisysDtoFactory.creditAnalisysDto());
+        when(creditAnalysisApi.getCreditAnalysisById(analisysIdArgumentCaptor.capture()))
+                .thenReturn(CreditAnalysisDtoFactory.creditAnalysisDto());
 
         doThrow(DataIntegrityViolationException.class)
                 .when(cardHolderRepository)

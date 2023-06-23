@@ -1,14 +1,14 @@
-package com.example.apiportador.infrastructure.apicreditanalisys;
+package com.example.apiportador.infrastructure.apicreditanalysis;
 
-import com.example.apiportador.infrastructure.apicreditanalisys.dto.CreditAnalisysDto;
+import com.example.apiportador.infrastructure.apicreditanalysis.dto.CreditAnalysisDto;
 import java.util.UUID;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(name = "creditAnalisysApi", url = "${url.api-credit-analysis}")
-public interface CreditAnalisysApi {
+public interface CreditAnalysisApi {
 
     @GetMapping("/{creditAnalysisId}")
-    CreditAnalisysDto getCreditAnalisysById(@PathVariable UUID creditAnalysisId);
+    CreditAnalysisDto getCreditAnalysisById(@PathVariable UUID creditAnalysisId);
 }

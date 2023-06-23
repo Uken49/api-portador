@@ -2,8 +2,8 @@ package com.example.apiportador.presentation.handler;
 
 import com.example.apiportador.presentation.handler.exception.ClientDoesNotCorrespondToCreditAnalysisException;
 import com.example.apiportador.presentation.handler.exception.ClientWithIDAlreadyExistsException;
-import com.example.apiportador.presentation.handler.exception.CreditAnalisysNotApproved;
-import com.example.apiportador.presentation.handler.exception.CreditAnalisysNotFoundException;
+import com.example.apiportador.presentation.handler.exception.CreditAnalysisNotApproved;
+import com.example.apiportador.presentation.handler.exception.CreditAnalysisNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import java.net.URI;
 import java.time.LocalDateTime;
@@ -35,13 +35,13 @@ public class HandlerExceptionAdvice {
         return builderProblemDetail("Portador não cadastrado", HttpStatus.UNPROCESSABLE_ENTITY, cwiaee.getMessage());
     }
 
-    @ExceptionHandler(CreditAnalisysNotFoundException.class)
-    public ProblemDetail creditAnalisysNotFoundExceptionHandler(CreditAnalisysNotFoundException canfe) {
+    @ExceptionHandler(CreditAnalysisNotFoundException.class)
+    public ProblemDetail creditAnalysisNotFoundExceptionHandler(CreditAnalysisNotFoundException canfe) {
         return builderProblemDetail("Análise de crédito não encontrada", HttpStatus.UNPROCESSABLE_ENTITY, canfe.getMessage());
     }
 
-    @ExceptionHandler(CreditAnalisysNotApproved.class)
-    public ProblemDetail creditAnalisysNotApprovedHandler(CreditAnalisysNotApproved cana) {
+    @ExceptionHandler(CreditAnalysisNotApproved.class)
+    public ProblemDetail creditAnalysisNotApprovedHandler(CreditAnalysisNotApproved cana) {
         return builderProblemDetail("Cliente sem limite de crédito", HttpStatus.UNPROCESSABLE_ENTITY, cana.getMessage());
     }
 

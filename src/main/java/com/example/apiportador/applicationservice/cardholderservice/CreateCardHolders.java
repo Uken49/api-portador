@@ -1,15 +1,15 @@
 package com.example.apiportador.applicationservice.cardholderservice;
 
 import com.example.apiportador.applicationservice.domain.entity.CardHolder;
-import com.example.apiportador.infrastructure.apicreditanalisys.CreditAnalisysApi;
-import com.example.apiportador.infrastructure.apicreditanalisys.dto.CreditAnalisysDto;
+import com.example.apiportador.infrastructure.apicreditanalysis.CreditAnalysisApi;
+import com.example.apiportador.infrastructure.apicreditanalysis.dto.CreditAnalysisDto;
 import com.example.apiportador.infrastructure.mapper.CardHolderMapper;
 import com.example.apiportador.infrastructure.repository.CardHolderRepository;
 import com.example.apiportador.infrastructure.repository.entity.CardHolderEntity;
 import com.example.apiportador.presentation.handler.exception.ClientDoesNotCorrespondToCreditAnalysisException;
 import com.example.apiportador.presentation.handler.exception.ClientWithIDAlreadyExistsException;
-import com.example.apiportador.presentation.handler.exception.CreditAnalisysNotApproved;
-import com.example.apiportador.presentation.handler.exception.CreditAnalisysNotFoundException;
+import com.example.apiportador.presentation.handler.exception.CreditAnalysisNotApproved;
+import com.example.apiportador.presentation.handler.exception.CreditAnalysisNotFoundException;
 import com.example.apiportador.presentation.request.CardHolderRequest;
 import com.example.apiportador.presentation.response.CardHolderResponse;
 import com.example.apiportador.util.enums.StatusEnum;
@@ -23,16 +23,16 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CreateCardHolders {
 
-    private final CreditAnalisysApi creditAnalisysApi;
+    private final CreditAnalysisApi creditAnalysisApi;
     private final CardHolderMapper cardHolderMapper;
     private final CardHolderRepository cardHolderRepository;
 
     public CardHolderResponse createCardHolder(CardHolderRequest requestedAnalysis) {
 
-        final CreditAnalisysDto creditAnalisys = findCreditAnalisysById(requestedAnalysis.clientId(), requestedAnalysis.creditAnalysisId());
+        final CreditAnalysisDto creditAnalysis = findCreditAnalysisById(requestedAnalysis.clientId(), requestedAnalysis.creditAnalysisId());
 
         final CardHolder cardHolder = cardHolderMapper.fromDomain(requestedAnalysis).toBuilder()
-                .limit(creditAnalisys.approvedLimit())
+                .limit(creditAnalysis.approvedLimit())
                 .status(StatusEnum.ACTIVE)
                 .build();
 
@@ -42,22 +42,22 @@ public class CreateCardHolders {
         return cardHolderMapper.fromResponse(cardHolderSaved);
     }
 
-    private CreditAnalisysDto findCreditAnalisysById(UUID clientId, UUID analisysId) {
-        final CreditAnalisysDto creditAnalisys = creditAnalisysApi.getCreditAnalisysById(analisysId);
+    private CreditAnalysisDto findCreditAnalysisById(UUID clientId, UUID analysisId) {
+        final CreditAnalysisDto creditAnalysis = creditAnalysisApi.getCreditAnalysisById(analysisId);
 
-        if (Objects.isNull(creditAnalisys)) {
-            throw new CreditAnalisysNotFoundException("Análise de crédito com ID: %s não foi encontrada".formatted(analisysId));
+        if (Objects.isNull(creditAnalysis)) {
+            throw new CreditAnalysisNotFoundException("Análise de crédito com ID: %s não foi encontrada".formatted(analysisId));
         }
 
-        if (Boolean.FALSE.equals(creditAnalisys.approved())) {
-            throw new CreditAnalisysNotApproved("Não é possível criar portador com análise de crédito não aprovada");
+        if (Boolean.FALSE.equals(creditAnalysis.approved())) {
+            throw new CreditAnalysisNotApproved("Não é possível criar portador com análise de crédito não aprovada");
         }
 
-        if (!clientId.equals(creditAnalisys.clientId())) {
+        if (!clientId.equals(creditAnalysis.clientId())) {
             throw new ClientDoesNotCorrespondToCreditAnalysisException("ID do cliente não corresponde ao ID da análise");
         }
 
-        return creditAnalisys;
+        return creditAnalysis;
     }
 
     private CardHolderEntity saveCardHolder(CardHolderEntity cardHolderEntity) {
