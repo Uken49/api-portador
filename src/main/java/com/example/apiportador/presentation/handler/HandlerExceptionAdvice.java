@@ -4,6 +4,7 @@ import com.example.apiportador.presentation.handler.exception.ClientDoesNotCorre
 import com.example.apiportador.presentation.handler.exception.ClientWithIDAlreadyExistsException;
 import com.example.apiportador.presentation.handler.exception.CreditAnalysisNotApproved;
 import com.example.apiportador.presentation.handler.exception.CreditAnalysisNotFoundException;
+import com.example.apiportador.presentation.handler.exception.InvalidStatusValueException;
 import jakarta.validation.ConstraintViolationException;
 import java.net.URI;
 import java.time.LocalDateTime;
@@ -48,6 +49,11 @@ public class HandlerExceptionAdvice {
     @ExceptionHandler(ConstraintViolationException.class)
     public ProblemDetail constraintViolationExceptionHandler(ConstraintViolationException cve) {
         return builderProblemDetail("Argumento inválido", HttpStatus.BAD_REQUEST, cve.getLocalizedMessage());
+    }
+
+    @ExceptionHandler(InvalidStatusValueException.class)
+    public ProblemDetail invalidStatusValueExceptionHandler(InvalidStatusValueException isve) {
+        return builderProblemDetail("Valor do status não aceito", HttpStatus.BAD_REQUEST, isve.getMessage());
     }
 
 }
