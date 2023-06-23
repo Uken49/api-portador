@@ -1,27 +1,28 @@
+CREATE TABLE IF NOT EXISTS BANK_ACCOUNT(
+        id UUID,
+        PRIMARY KEY (id),
+        account CHAR(10),
+        agency CHAR(4),
+        bank_code CHAR(3),
+        created_at TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS CARD_HOLDER(
-        id UUID UNIQUE,
+        id UUID,
+        PRIMARY KEY (id),
         client_id UUID NOT NULL UNIQUE,
+        credit_analysis_id UUID NOT NULL UNIQUE,
         status VARCHAR(8) NOT NULL,
         credit_limit DOUBLE PRECISION NOT NULL,
         created_at TIMESTAMP NOT NULL,
         updated_at TIMESTAMP NOT NULL,
-        PRIMARY KEY (id)
-);
-
-CREATE TABLE IF NOT EXISTS BANK_ACCOUNT(
-        id UUID UNIQUE,
-        account CHAR(10),
-        agency CHAR(4),
-        bank_code CHAR(3),
-        card_holder_id UUID NOT NULL UNIQUE,
-        created_at TIMESTAMP NOT NULL,
-        updated_at TIMESTAMP NOT NULL,
-        PRIMARY KEY (id),
-        CONSTRAINT fk_card_holder_iid FOREIGN KEY (card_holder_id) REFERENCES CARD_HOLDER (id)
+        bank_account_id UUID UNIQUE,
+        CONSTRAINT fk_bank_account_id FOREIGN KEY (bank_account_id) REFERENCES BANK_ACCOUNT (id)
 );
 
 CREATE TABLE IF NOT EXISTS CARD(
-        id UUID UNIQUE,
+        id UUID,
         PRIMARY KEY (id),
         credit_limit DOUBLE PRECISION NOT NULL,
         card_number VARCHAR(19) NOT NULL,
@@ -32,3 +33,4 @@ CREATE TABLE IF NOT EXISTS CARD(
         card_holder_id UUID NOT NULL UNIQUE,
         CONSTRAINT fk_card_holder_id FOREIGN KEY (card_holder_id) REFERENCES CARD_HOLDER (id)
 );
+

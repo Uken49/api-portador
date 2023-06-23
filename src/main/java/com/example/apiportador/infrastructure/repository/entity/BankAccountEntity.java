@@ -1,12 +1,9 @@
 package com.example.apiportador.infrastructure.repository.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -32,10 +29,6 @@ public class BankAccountEntity {
     String agency;
 
     BigDecimal bankCode;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "card_holder_id", referencedColumnName = "id")
-    CardHolderEntity cardHolder;
 
     @CreationTimestamp
     LocalDateTime createdAt;

@@ -1,6 +1,7 @@
 package com.example.apiportador.infrastructure.repository.entity;
 
 import com.example.apiportador.util.enums.StatusEnum;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -8,6 +9,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -30,11 +33,17 @@ public class CardHolderEntity {
 
     UUID clientId;
 
+    UUID creditAnalysisId;
+
     @Enumerated(EnumType.STRING)
     StatusEnum status;
 
     @Column(name = "credit_limit")
     BigDecimal limit;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "bank_account_id", referencedColumnName = "id")
+    BankAccountEntity bankAccount;
 
     @CreationTimestamp
     LocalDateTime createdAt;

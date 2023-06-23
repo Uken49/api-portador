@@ -7,6 +7,6 @@ import lombok.Builder;
 
 @Builder(toBuilder = true)
 public record CardHolder(
-        UUID clientId, StatusEnum status, BigDecimal limit, BankAccount bankAccount
+        UUID clientId, UUID creditAnalysisId, StatusEnum status, BigDecimal limit, BankAccount bankAccount
 ) {
 }
