@@ -27,12 +27,12 @@ public class HandlerExceptionAdvice {
 
     @ExceptionHandler(ClientDoesNotCorrespondToCreditAnalysisException.class)
     public ProblemDetail clientDoesNotCorrespondToCreditAnalysisExceptionHandler(ClientDoesNotCorrespondToCreditAnalysisException cdnctcae) {
-        return builderProblemDetail("Portador não cadastrado", HttpStatus.BAD_REQUEST, cdnctcae.getMessage());
+        return builderProblemDetail("Portador não cadastrado", HttpStatus.UNPROCESSABLE_ENTITY, cdnctcae.getMessage());
     }
 
     @ExceptionHandler(ClientWithIDAlreadyExistsException.class)
     public ProblemDetail clientWithIDAlreadyExistsExceptionHandler(ClientWithIDAlreadyExistsException cwiaee) {
-        return builderProblemDetail("Portador não cadastrado", HttpStatus.CONFLICT, cwiaee.getMessage());
+        return builderProblemDetail("Portador não cadastrado", HttpStatus.UNPROCESSABLE_ENTITY, cwiaee.getMessage());
     }
 
     @ExceptionHandler(CreditAnalisysNotFoundException.class)

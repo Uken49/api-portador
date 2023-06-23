@@ -30,7 +30,7 @@ public record CardHolderRequest(
 
     public record BankAccount(
             @NotBlank(message = "é obrigatório")
-            @Pattern(regexp = "^[0-9xX]{9}-[0-9xX]$")
+            @Pattern(regexp = "^[0-9xX]{8}-[0-9xX]$")
             String account,
             @NotBlank(message = "é obrigatório")
             @Pattern(regexp = "^[0-9]{4}$")
@@ -42,7 +42,7 @@ public record CardHolderRequest(
 
         public BankAccount(
                 @NotBlank(message = "é obrigatório")
-                @Pattern(regexp = "^[0-9xX]{9}-[0-9xX]$", message = "deve respeitar este formato: 123456789-x, 123456789-0 ou 1x3456789-0")
+                @Pattern(regexp = "^[0-9xX]{8}-[0-9xX]$", message = "deve respeitar este formato: 123456789-x, 123456789-0 ou 1x3456789-0")
                 String account,
                 @NotBlank(message = "é obrigatório")
                 @Pattern(regexp = "^[0-9]{4}$", message = "deve repeitar este formato: 1234")
