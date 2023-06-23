@@ -16,6 +16,7 @@ import com.example.apiportador.util.enums.StatusEnum;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -36,8 +37,7 @@ public class CreateCardHolders {
                 .build();
 
         final CardHolderEntity cardHolderEntity = cardHolderMapper.fromEntity(cardHolder);
-
-        final CardHolderEntity cardHolderSaved = cardHolderRepository.save(cardHolderEntity);
+        final CardHolderEntity cardHolderSaved = saveCardHolder(cardHolderEntity);
 
         return cardHolderMapper.fromResponse(cardHolderSaved);
     }
@@ -57,10 +57,15 @@ public class CreateCardHolders {
             throw new ClientDoesNotCorrespondToCreditAnalysisException("ID do cliente não corresponde ao ID da análise");
         }
 
-        if (cardHolderRepository.existsByClientId(clientId)) {
-            throw new ClientWithIDAlreadyExistsException("Cliente com ID: %s já possui um cadastro".formatted(analisysId));
-        }
-
         return creditAnalisys;
     }
+
+    private CardHolderEntity saveCardHolder(CardHolderEntity cardHolderEntity) {
+        try {
+            return cardHolderRepository.save(cardHolderEntity);
+        } catch (DataIntegrityViolationException dive) {
+            throw new ClientWithIDAlreadyExistsException("Cliente com ID: %s já possui um cadastro".formatted(cardHolderEntity.getClientId()));
+        }
+    }
+
 }
