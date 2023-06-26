@@ -1,5 +1,6 @@
 package com.example.apiportador.presentation.handler;
 
+import com.example.apiportador.presentation.handler.exception.CardHolderNotFoundException;
 import com.example.apiportador.presentation.handler.exception.ClientDoesNotCorrespondToCreditAnalysisException;
 import com.example.apiportador.presentation.handler.exception.ClientWithIDAlreadyExistsException;
 import com.example.apiportador.presentation.handler.exception.CreditAnalysisNotApproved;
@@ -10,8 +11,10 @@ import java.net.URI;
 import java.time.LocalDateTime;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
 public class HandlerExceptionAdvice {
@@ -24,6 +27,21 @@ public class HandlerExceptionAdvice {
         problemDetail.setProperty("timestamp", LocalDateTime.now());
 
         return problemDetail;
+    }
+
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ProblemDetail methodArgumentTypeMismatchHandler(MethodArgumentTypeMismatchException matme) {
+
+        return builderProblemDetail("Incompatibilidade no tipo de argumento", HttpStatus.BAD_REQUEST, matme.getMessage());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ProblemDetail methodArgumentNotValidHandler(MethodArgumentNotValidException manve) {
+
+        final String detail = manve.getFieldError().getField() + " " + manve.getFieldError().getDefaultMessage();
+
+        return builderProblemDetail("Argumento inválido", HttpStatus.BAD_REQUEST, detail);
     }
 
     @ExceptionHandler(ClientDoesNotCorrespondToCreditAnalysisException.class)
@@ -54,6 +72,11 @@ public class HandlerExceptionAdvice {
     @ExceptionHandler(InvalidStatusValueException.class)
     public ProblemDetail invalidStatusValueExceptionHandler(InvalidStatusValueException isve) {
         return builderProblemDetail("Valor do status não aceito", HttpStatus.BAD_REQUEST, isve.getMessage());
+    }
+
+    @ExceptionHandler(CardHolderNotFoundException.class)
+    public ProblemDetail cardHolderNotFoundExceptionHandler(CardHolderNotFoundException chnfe) {
+        return builderProblemDetail("Portador não encontrado", HttpStatus.NOT_FOUND, chnfe.getMessage());
     }
 
 }
