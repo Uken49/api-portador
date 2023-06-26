@@ -49,9 +49,6 @@ class CreateCardHoldersTest {
     private ArgumentCaptor<UUID> analisysIdArgumentCaptor;
 
     @Captor
-    private ArgumentCaptor<UUID> clientIdArgumentCaptor;
-
-    @Captor
     private ArgumentCaptor<CardHolderEntity> cardHolderEntityArgumentCaptor;
 
     @Test
