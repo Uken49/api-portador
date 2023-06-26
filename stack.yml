@@ -1,0 +1,16 @@
+services: # Serviços que esse compose terá
+  postgres: # Configurações do postgres
+    image: postgres # Imagem usada
+    container_name: postgres_portador # Nome do container
+    environment: # Variávies de ambiente
+      POSTGRES_USER: admin # Usuário para se conectar
+      POSTGRES_PASSWORD: root # Senha para se conectar
+    ports: # portas (porta de conexão do compose : porta de conexão do serviço dentro do container )
+      - "5434:5432"
+
+  adminer:
+    image: adminer
+    container_name: adminer_portador
+    restart: always
+    ports: # portas  (porta de conexão do compose: porta de conexão do serviço dentro do container )
+      - "9003:8080"
