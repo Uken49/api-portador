@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -25,6 +26,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Entity
 @Immutable
 @Getter
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "CARD_HOLDER")
