@@ -6,10 +6,12 @@ import com.example.apiportador.presentation.request.CardHolderRequest;
 import com.example.apiportador.presentation.response.CardHolderResponse;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +38,12 @@ public class CardHolderController {
     @GetMapping
     public List<CardHolderResponse> searchCardHolder(@RequestParam(required = false) String status) {
         return searchCardHolders.getAllCardHolders(status);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{id}")
+    public CardHolderResponse getCardHolderById(@PathVariable UUID id) {
+        return searchCardHolders.getCardHolderById(id);
     }
 
 }
