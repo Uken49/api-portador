@@ -40,7 +40,7 @@ public class CardEntity {
 
     Date dueDate;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "card_holder_id", referencedColumnName = "id")
     CardHolderEntity cardHolder;
 
