@@ -1,41 +1,48 @@
 package com.example.apiportador.applicationservice.domain.entity;
 
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.Builder;
 
-@Builder(toBuilder = true)
-public class Card {
+public record Card(
+        UUID cardHolderId,
+        BigDecimal creditLimit,
+        String cardNumber,
+        Integer cvv,
+        LocalDate dueDate
+) {
 
-    BigDecimal limit;
-
-    String cardNumber;
-
-    Integer cvv;
-
-    Date dueDate;
-
-    private static final Integer VISA_ID = 1;
-
-    public Card(BigDecimal limit) {
-        this.limit = limit;
+    @Builder(toBuilder = true)
+    public Card(UUID cardHolderId, BigDecimal creditLimit, String cardNumber, Integer cvv, LocalDate dueDate) {
+        this.cardHolderId = cardHolderId;
+        this.creditLimit = creditLimit;
         this.cardNumber = generateCardNumber();
-        this.cvv = generateCvv();
-        this.dueDate = Date.from(Instant.now());
+        this.cvv = ThreadLocalRandom.current().nextInt(100, 1000);
+        this.dueDate = LocalDate.now().plusYears(5);
     }
 
     private String generateCardNumber() {
-        final Integer firstNumber = VISA_ID;
-        final Integer generatedNumbers = ThreadLocalRandom.current().nextInt(100000,999999);
-        final Integer holderNumber;
-        final Integer verifyingDigit;
-
-        return null;
+        final String generatedNumbers = String.valueOf(ThreadLocalRandom.current().nextLong(40000000000000L, 50000000000000L));
+        return generatedNumbers + luhnAlgorithm(generatedNumbers);
     }
 
-    private Integer generateCvv() {
-        return null;
+    private String luhnAlgorithm(String number) {
+
+        final int numberJump = 2;
+        Integer finalDigit = 0;
+
+        for (int i = number.length(); i > 0; i -= numberJump) {
+            int digit = Character.getNumericValue(number.charAt(i - 1));
+
+            if (digit > 9) {
+                digit = digit % 10 + 1;
+            }
+
+            finalDigit += digit;
+        }
+
+        return String.valueOf(finalDigit);
     }
 }
