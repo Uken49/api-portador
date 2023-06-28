@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS CARD(
         due_date DATE NOT NULL,
         created_at TIMESTAMP NOT NULL,
         updated_at TIMESTAMP NOT NULL,
-        card_holder_id UUID NOT NULL UNIQUE,
+        card_holder_id UUID NOT NULL,
         CONSTRAINT fk_card_holder_id FOREIGN KEY (card_holder_id) REFERENCES CARD_HOLDER (id)
 );
 
