@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("v1.0/card-holders")
+@RequestMapping("v1.0/card-holders/{cardHolderId}/cards")
 @RequiredArgsConstructor
 @Validated
 public class CardController {
@@ -22,7 +22,7 @@ public class CardController {
     private final CreateCard createCard;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/{cardHolderId}/cards")
+    @PostMapping
     public CardResponse createCard(@RequestBody @Valid CardRequest cardRequest) {
         return createCard.createCard(cardRequest);
     }
