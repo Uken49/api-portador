@@ -6,6 +6,7 @@ import com.example.apiportador.presentation.handler.exception.ClientWithIDAlread
 import com.example.apiportador.presentation.handler.exception.CreditAnalysisNotApproved;
 import com.example.apiportador.presentation.handler.exception.CreditAnalysisNotFoundException;
 import com.example.apiportador.presentation.handler.exception.InvalidStatusValueException;
+import com.example.apiportador.presentation.handler.exception.RequestedLimitGreaterThanAvailableException;
 import jakarta.validation.ConstraintViolationException;
 import java.net.URI;
 import java.time.LocalDateTime;
@@ -28,7 +29,6 @@ public class HandlerExceptionAdvice {
 
         return problemDetail;
     }
-
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ProblemDetail methodArgumentTypeMismatchHandler(MethodArgumentTypeMismatchException matme) {
@@ -79,4 +79,8 @@ public class HandlerExceptionAdvice {
         return builderProblemDetail("Portador não encontrado", HttpStatus.NOT_FOUND, chnfe.getMessage());
     }
 
+    @ExceptionHandler(RequestedLimitGreaterThanAvailableException.class)
+    public ProblemDetail cardHolderHasNoLimitExceptionHandler(RequestedLimitGreaterThanAvailableException chhnle) {
+        return builderProblemDetail("Cartão não pôde ser criado", HttpStatus.UNPROCESSABLE_ENTITY, chhnle.getMessage());
+    }
 }
