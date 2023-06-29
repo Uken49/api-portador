@@ -22,4 +22,11 @@ public class SearchCard {
 
         return cards.stream().map(cardMapper::fromResponse).toList();
     }
+
+    public List<CardResponse> getCard(UUID cardId, UUID cardHolderId) {
+
+        cardRepository.findByIdAndCardHolderId(cardId, cardHolderId);
+
+        return null;
+    }
 }

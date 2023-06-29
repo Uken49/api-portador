@@ -39,4 +39,10 @@ public class CardController {
         return searchCard.getAllCard(cardHolderId);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{cardId}")
+    public List<CardResponse> getAllCard(@PathVariable UUID cardHolderId, UUID cardId) {
+        return searchCard.getCard(cardHolderId, cardId);
+    }
+
 }
