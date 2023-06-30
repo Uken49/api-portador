@@ -3,6 +3,8 @@ package com.example.apiportador.applicationservice.cardservice;
 import com.example.apiportador.infrastructure.mapper.CardMapper;
 import com.example.apiportador.infrastructure.repository.CardRepository;
 import com.example.apiportador.infrastructure.repository.entity.CardEntity;
+import com.example.apiportador.presentation.handler.exception.CardHolderDoesNotCorrespondToCardException;
+import com.example.apiportador.presentation.handler.exception.CardNotFoundException;
 import com.example.apiportador.presentation.response.CardResponse;
 import java.util.List;
 import java.util.UUID;
@@ -23,10 +25,16 @@ public class SearchCard {
         return cards.stream().map(cardMapper::fromResponse).toList();
     }
 
-    public List<CardResponse> getCard(UUID cardId, UUID cardHolderId) {
+    public CardResponse getCard(UUID cardId, UUID cardHolderId) {
 
-        cardRepository.findByIdAndCardHolderId(cardId, cardHolderId);
+        final CardEntity cardEntity = cardRepository.findByIdAndCardHolderId(cardId, cardHolderId).orElseThrow(
+                () -> new CardNotFoundException("Cartão com ID: %s não foi encontrado".formatted(cardId))
+        );
 
-        return null;
+        if (!cardHolderId.equals(cardEntity.getCardHolder().getId())) {
+            throw new CardHolderDoesNotCorrespondToCardException("ID do cliente não corresponde ao ID do cartão");
+        }
+
+        return cardMapper.fromResponse(cardEntity);
     }
 }

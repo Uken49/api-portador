@@ -1,6 +1,8 @@
 package com.example.apiportador.presentation.handler;
 
+import com.example.apiportador.presentation.handler.exception.CardHolderDoesNotCorrespondToCardException;
 import com.example.apiportador.presentation.handler.exception.CardHolderNotFoundException;
+import com.example.apiportador.presentation.handler.exception.CardNotFoundException;
 import com.example.apiportador.presentation.handler.exception.ClientDoesNotCorrespondToCreditAnalysisException;
 import com.example.apiportador.presentation.handler.exception.ClientWithIDAlreadyExistsException;
 import com.example.apiportador.presentation.handler.exception.CreditAnalysisNotApproved;
@@ -46,7 +48,7 @@ public class HandlerExceptionAdvice {
 
     @ExceptionHandler(ClientDoesNotCorrespondToCreditAnalysisException.class)
     public ProblemDetail clientDoesNotCorrespondToCreditAnalysisExceptionHandler(ClientDoesNotCorrespondToCreditAnalysisException cdnctcae) {
-        return builderProblemDetail("Portador não cadastrado", HttpStatus.UNPROCESSABLE_ENTITY, cdnctcae.getMessage());
+        return builderProblemDetail("ID não corresponde", HttpStatus.UNPROCESSABLE_ENTITY, cdnctcae.getMessage());
     }
 
     @ExceptionHandler(ClientWithIDAlreadyExistsException.class)
@@ -81,6 +83,16 @@ public class HandlerExceptionAdvice {
 
     @ExceptionHandler(RequestedLimitGreaterThanAvailableException.class)
     public ProblemDetail cardHolderHasNoLimitExceptionHandler(RequestedLimitGreaterThanAvailableException chhnle) {
-        return builderProblemDetail("Cartão não pôde ser criado", HttpStatus.UNPROCESSABLE_ENTITY, chhnle.getMessage());
+        return builderProblemDetail("Cartão não liberado", HttpStatus.UNPROCESSABLE_ENTITY, chhnle.getMessage());
+    }
+
+    @ExceptionHandler(CardNotFoundException.class)
+    public ProblemDetail cardNotFoundException(CardNotFoundException cnfe) {
+        return builderProblemDetail("Cartão não encontrado", HttpStatus.NOT_FOUND, cnfe.getMessage());
+    }
+
+    @ExceptionHandler(CardHolderDoesNotCorrespondToCardException.class)
+    public ProblemDetail cardHolderDoesNotCorrespondToCardException(CardHolderDoesNotCorrespondToCardException chdnctce) {
+        return builderProblemDetail("ID não corresponde", HttpStatus.UNPROCESSABLE_ENTITY, chdnctce.getMessage());
     }
 }
