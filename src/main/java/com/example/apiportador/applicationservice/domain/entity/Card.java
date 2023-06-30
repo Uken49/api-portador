@@ -25,7 +25,15 @@ public record Card(
 
     private String generateCardNumber() {
         final String generatedNumbers = String.valueOf(ThreadLocalRandom.current().nextLong(40000000000000L, 50000000000000L));
-        return generatedNumbers + luhnAlgorithm(generatedNumbers);
+        final String cardNumber = generatedNumbers + luhnAlgorithm(generatedNumbers);
+
+        final StringBuilder formatted = new StringBuilder(cardNumber);
+
+        for (int i = formatted.length() - 4; i > 0; i -= 4) {
+            formatted.insert(i, ' ');
+        }
+
+        return formatted.toString();
     }
 
     private String luhnAlgorithm(String number) {
