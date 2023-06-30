@@ -41,8 +41,8 @@ public class CardController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{cardId}")
-    public List<CardResponse> getAllCard(@PathVariable UUID cardHolderId, UUID cardId) {
-        return searchCard.getCard(cardHolderId, cardId);
+    public CardResponse getAllCard(@PathVariable UUID cardHolderId, @PathVariable UUID cardId) {
+        return searchCard.getCard(cardId, cardHolderId);
     }
 
 }
