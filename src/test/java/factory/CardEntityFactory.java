@@ -12,6 +12,9 @@ public class CardEntityFactory {
                 .cardNumber("4278 0818 4784 7744")
                 .cvv(123)
                 .dueDate(LocalDate.now().plusYears(5))
+                .cardHolder(
+                        CardHolderEntityFactory.cardHolderEntity()
+                )
                 .build();
     }
 }
