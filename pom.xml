@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>api-analise-credito</artifactId>
+	<artifactId>api-portador</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>api-analise-credito</name>
-	<description>Api que faz análise de crédito</description>
+	<name>api-portador</name>
+	<description>Api que cria um portador</description>
 	<properties>
 		<java.version>17</java.version>
 		<lombok.version>1.18.26</lombok.version>
